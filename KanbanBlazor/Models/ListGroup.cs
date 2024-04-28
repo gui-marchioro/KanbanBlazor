@@ -4,5 +4,5 @@ public class ListGroup
 {
     public int Id { get; set; }
     public string? Name { get; set; }
-    public List<Task>? Tasks { get; set; }
+    public List<Activity>? Tasks { get; set; }
 }

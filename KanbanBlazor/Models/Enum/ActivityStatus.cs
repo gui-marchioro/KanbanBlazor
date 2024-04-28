@@ -1,6 +1,6 @@
 ﻿namespace KanbanBlazor.Models.Enum;
 
-public enum TaskStatus
+public enum ActivityStatus
 {
     ToDo,
     InProgress,
