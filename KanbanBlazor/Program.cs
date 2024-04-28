@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using KanbanBlazor.Components;
+using KanbanBlazor.Data;
 
 namespace KanbanBlazor
 {
@@ -6,11 +8,20 @@ namespace KanbanBlazor
     {
         public static void Main(string[] args)
         {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production"}.json", true)
+                .Build();
+
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+            // Database Service
+            builder.Services.AddDbContextFactory<AppDbContext>(opt =>
+                opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             var app = builder.Build();
 
