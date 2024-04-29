@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34607.119
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KanbanBlazor", "KanbanBlazor\KanbanBlazor.csproj", "{07D3CE8A-7A30-4B24-92F6-1E327AE6B421}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KanbanBlazor", "KanbanBlazor\KanbanBlazor.csproj", "{07D3CE8A-7A30-4B24-92F6-1E327AE6B421}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

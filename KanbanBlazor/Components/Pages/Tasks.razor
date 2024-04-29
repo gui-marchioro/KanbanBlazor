@@ -1,0 +1,45 @@
+﻿@page "/Tasks"
+@using KanbanBlazor.Data.Services
+@using KanbanBlazor.Models
+
+@inject TasksService _tasksService
+
+<h1>Tasks</h1>
+
+@if (tasks is null)
+{
+	<p><em>Loading...</em></p>
+}
+else
+{
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<td>Title</td>
+				<td>Description</td>
+				<td>Status</td>
+				<td>Group List</td>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var task in tasks)
+			{
+				<tr>
+					<td>@task.Title</td>
+					<td>@task.Description</td>
+					<td>@task.Status</td>
+					<td>@task.ListGroup?.Name</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	private List<Activity>? tasks;
+
+	protected override async Task OnInitializedAsync()
+	{
+		tasks = await _tasksService.GetAllTasks();
+	}
+}

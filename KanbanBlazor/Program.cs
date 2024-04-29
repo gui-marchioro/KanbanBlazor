@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using KanbanBlazor.Components;
 using KanbanBlazor.Data;
+using KanbanBlazor.Data.Services;
 
 namespace KanbanBlazor
 {
@@ -22,6 +23,7 @@ namespace KanbanBlazor
             // Database Service
             builder.Services.AddDbContextFactory<AppDbContext>(opt =>
                 opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+            builder.Services.AddTransient<TasksService>();
 
             var app = builder.Build();
 
