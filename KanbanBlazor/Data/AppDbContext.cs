@@ -1,6 +1,5 @@
 ﻿using KanbanBlazor.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
 
 namespace KanbanBlazor.Data;
 
