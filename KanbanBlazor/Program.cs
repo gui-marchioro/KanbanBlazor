@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using KanbanBlazor.Components;
 using KanbanBlazor.Data;
 using KanbanBlazor.Data.Services;
@@ -21,7 +21,7 @@ namespace KanbanBlazor
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
             // Database Service
-            builder.Services.AddDbContextFactory<AppDbContext>(opt =>
+            builder.Services.AddDbContext<AppDbContext>(opt =>
                 opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddTransient<TasksService>();
 
