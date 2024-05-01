@@ -5,15 +5,19 @@ namespace KanbanBlazor.Data.Services;
 
 public class TasksService
 {
-	private readonly AppDbContext _dbContext;
+	private readonly IDbContextFactory<AppDbContext> _dbContextFactory;
 
-	public TasksService(AppDbContext dbContext)
+	public TasksService(IDbContextFactory<AppDbContext> dbContextFactory)
 	{
-		this._dbContext = dbContext;
+		this._dbContextFactory = dbContextFactory;
 	}
 
 	public async Task<List<Activity>> GetAllTasks()
 	{
-		return await _dbContext.Tasks.Include(t => t.ListGroup).ToListAsync();
+		using (var context = this._dbContextFactory.CreateDbContext())
+		{
+			return await context.Tasks.Include(t => t.ListGroup).ToListAsync();
+		}
+	}
 	}
 }

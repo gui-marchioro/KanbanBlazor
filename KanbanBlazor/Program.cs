@@ -21,7 +21,7 @@ namespace KanbanBlazor
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
             // Database Service
-            builder.Services.AddDbContext<AppDbContext>(opt =>
+            builder.Services.AddDbContextFactory<AppDbContext>(opt =>
                 opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddTransient<TasksService>();
 

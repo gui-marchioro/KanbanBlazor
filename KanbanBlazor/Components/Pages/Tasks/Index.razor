@@ -1,0 +1,66 @@
+﻿@page "/Tasks"
+@using KanbanBlazor.Data.Services
+@using KanbanBlazor.Data.ViewModels
+@using KanbanBlazor.Models
+
+@inject TasksService _tasksService
+
+<h1>Tasks</h1>
+<h4>Insert new task</h4>
+<EditForm Model="@newTask" OnValidSubmit="InsertTask">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<InputText id="title" @bind-Value="newTask.Title" />
+	<InputText id="description" @bind-Value="newTask.Description" />
+	<InputText id="group" @bind-Value="newTask.ListGroup" />
+
+	<button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+@if (tasks is null)
+{
+	<p><em>Loading...</em></p>
+}
+else
+{
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<td>Title</td>
+				<td>Description</td>
+				<td>Status</td>
+				<td>Group List</td>
+				<td>Edit</td>
+				<td>Delete</td>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var task in tasks)
+			{
+				<tr>
+					<td>@task.Title</td>
+					<td>@task.Description</td>
+					<td>@task.Status</td>
+					<td>@task.ListGroup?.Name</td>
+					<td><input type="button" class="btn btn-primary" value="Edit" /></td>
+					<td><input type="button" class="btn btn-danger" value="Delete" /></td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	private List<Activity>? tasks;
+	private ActivityGroup newTask = new ActivityGroup();
+
+	protected override async Task OnInitializedAsync()
+	{
+		tasks = await _tasksService.GetAllTasks();
+	}
+
+	private async Task InsertTask()
+	{
+	//	await _tasksService.InsertTask(newTask);
+	}
+}
