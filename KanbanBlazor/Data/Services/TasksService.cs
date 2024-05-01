@@ -19,5 +19,16 @@ public class TasksService
 			return await context.Tasks.Include(t => t.ListGroup).ToListAsync();
 		}
 	}
+
+	public async Task<Activity> AddTask(Activity task)
+	{
+		using (var context = this._dbContextFactory.CreateDbContext())
+		{
+			context.Tasks.Add(task);
+			await context.SaveChangesAsync();
+		}
+
+		return task;
+	}
 	}
 }

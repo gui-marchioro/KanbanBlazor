@@ -3,6 +3,7 @@ using KanbanBlazor.Components;
 using KanbanBlazor.Data;
 using KanbanBlazor.Data.Services;
 
+
 namespace KanbanBlazor
 {
     public class Program
@@ -18,12 +19,12 @@ namespace KanbanBlazor
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.Services.AddRazorComponents()
-                .AddInteractiveServerComponents();
+            builder.Services.AddRazorComponents().AddInteractiveServerComponents();
             // Database Service
             builder.Services.AddDbContextFactory<AppDbContext>(opt =>
                 opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
             builder.Services.AddTransient<TasksService>();
+            builder.Services.AddTransient<ListGroupsService>();
 
             var app = builder.Build();
 

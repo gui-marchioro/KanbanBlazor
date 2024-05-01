@@ -1,21 +1,11 @@
 ﻿@page "/Tasks"
+
 @using KanbanBlazor.Data.Services
-@using KanbanBlazor.Data.ViewModels
 @using KanbanBlazor.Models
 
 @inject TasksService _tasksService
 
 <h1>Tasks</h1>
-<h4>Insert new task</h4>
-<EditForm Model="@newTask" OnValidSubmit="InsertTask">
-	<DataAnnotationsValidator />
-	<ValidationSummary />
-	<InputText id="title" @bind-Value="newTask.Title" />
-	<InputText id="description" @bind-Value="newTask.Description" />
-	<InputText id="group" @bind-Value="newTask.ListGroup" />
-
-	<button type="submit" class="btn btn-primary">Submit</button>
-</EditForm>
 
 @if (tasks is null)
 {
@@ -23,6 +13,10 @@
 }
 else
 {
+	<div>
+		<a class="btn btn-primary" href="/Tasks/Add">New Task</a>
+	</div>
+
 	<table class="table table-striped">
 		<thead>
 			<tr>
@@ -50,17 +44,12 @@ else
 	</table>
 }
 
+
 @code {
 	private List<Activity>? tasks;
-	private ActivityGroup newTask = new ActivityGroup();
 
 	protected override async Task OnInitializedAsync()
 	{
 		tasks = await _tasksService.GetAllTasks();
-	}
-
-	private async Task InsertTask()
-	{
-	//	await _tasksService.InsertTask(newTask);
 	}
 }

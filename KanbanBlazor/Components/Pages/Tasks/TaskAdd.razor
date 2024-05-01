@@ -1,0 +1,69 @@
+﻿@page "/Tasks/Add"
+
+@using KanbanBlazor.Data.Services
+@using KanbanBlazor.Models
+@using KanbanBlazor.Models.Enum
+
+@inject NavigationManager _navigationManager
+@inject TasksService _tasksService
+@inject ListGroupsService _listGroupsService
+
+<h1>New Task</h1>
+
+<EditForm Model="@task" OnSubmit="CreateTask" FormName="TaskAdd">
+    <div class="form-group mt-2 mb-2">
+        <label for="Title">Title</label>
+        <InputText id="title" class="form-control" @bind-Value="@task.Title" />
+    </div>
+    <div class="form-group mt-2 mb-2">
+        <label for="Description">Description</label>
+        <InputText id="description" class="form-control" @bind-Value="@task.Description" />
+    </div>
+    <div class="form-group mb-2">
+        <label for="Status">Status</label>
+        <InputSelect id="status" class="form-control" @bind-Value="@task.Status">
+            <option value=""></option>
+            @foreach (var status in Enum.GetNames(typeof(ActivityStatus)))
+            {
+                <option value="@status">@status</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group mb-2">
+        <label for="ListGroup">List Group</label>
+        <InputSelect id="listgroup" class="form-control" @bind-Value="@task.ListGroupId">
+            <option value=""></option>
+            @foreach (var listGroup in listGroups)
+            {
+                <option value="@listGroup.Id">@listGroup.Name</option>
+            }
+        </InputSelect>
+    </div>
+    <input type="submit" class="btn btn-primary" value="Save" />
+    <a type="button" class="btn btn-secondary" href="/Tasks">Cancel</a>
+</EditForm>
+
+
+@code {
+    private List<ListGroup>? listGroups;
+
+    [SupplyParameterFromForm]
+    public Activity? task { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        task ??= new Activity();
+        listGroups = await _listGroupsService.GetAllListGroups();
+    }
+
+    private async void CreateTask()
+    {
+        await _tasksService.AddTask(task);
+        _navigationManager.NavigateTo("/Tasks");
+    }
+
+    private void Cancel()
+    {
+        _navigationManager.NavigateTo("/Tasks");
+    }
+}
