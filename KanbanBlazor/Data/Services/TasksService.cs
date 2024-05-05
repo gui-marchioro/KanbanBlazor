@@ -30,5 +30,28 @@ public class TasksService
 
 		return task;
 	}
+
+	public async Task<Activity> Delete(int id)
+	{
+		Activity? task;
+		using (var context = this._dbContextFactory.CreateDbContext())
+		{
+			task = await context.Tasks.FindAsync(id);
+			context.Tasks.Remove(task);
+			await context.SaveChangesAsync();
+		}
+
+		return task;
+	}
+
+	public async Task<Activity> Update(Activity task)
+	{
+		using (var context = this._dbContextFactory.CreateDbContext())
+		{
+			context.Entry(task).State = EntityState.Modified;
+			await context.SaveChangesAsync();
+		}
+
+		return task;
 	}
 }

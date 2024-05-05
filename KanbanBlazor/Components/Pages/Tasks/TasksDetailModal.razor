@@ -2,7 +2,6 @@
 @using KanbanBlazor.Models
 @using KanbanBlazor.Models.Enum
 
-@inject NavigationManager _navigationManager
 @inject TasksService _tasksService
 @inject ListGroupsService _listGroupsService
 
@@ -87,9 +86,16 @@
 
     private async void HandleValidSubmit()
     {
-        await _tasksService.AddTask(task);
+        if (task.Id == 0)
+        {
+            await _tasksService.AddTask(task);
+        }
+        else
+        {
+            await _tasksService.Update(task);
+        }
+
         Close();
-        //_navigationManager.NavigateTo("/Tasks", true);
         DataChanged?.Invoke();
     }
 

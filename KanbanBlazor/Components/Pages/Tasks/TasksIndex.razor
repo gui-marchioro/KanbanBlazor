@@ -17,7 +17,9 @@ else
 		<button class="btn btn-primary" @onclick="(() => NewTaskModal())">New Task</button>
 	</div>
 
-	<TasksDetailModal @ref="Modal" DataChanged="@OnDataChanged"></TasksDetailModal>
+	<TasksDetailModal @ref="TaskModal" DataChanged="@OnDataChanged" />
+
+	<TaskDeleteModal @ref="DeleteTaskModal" TaskDeleted="@OnTaskDeleted" />
 
 	<table class="table table-striped">
 		<thead>
@@ -38,8 +40,12 @@ else
 					<td>@task.Description</td>
 					<td>@task.Status</td>
 					<td>@task.ListGroup?.Name</td>
-					<td><input type="button" class="btn btn-primary" value="Edit" /></td>
-					<td><input type="button" class="btn btn-danger" value="Delete" /></td>
+					<td>
+						<input type="button" class="btn btn-primary" @onclick="(() =>EditTaskModal(task))" value="Edit" />
+					</td>
+					<td>
+						<input type="button" class="btn btn-danger" @onclick="(() =>ShowConfirmDeleteTaskModal(task))" value=" Delete" />
+					</td>
 				</tr>
 			}
 		</tbody>
@@ -50,7 +56,9 @@ else
 @code {
 	private List<Activity>? tasks;
 
-	private TasksDetailModal Modal { get; set; }
+	private TasksDetailModal TaskModal { get; set; }
+
+	private TaskDeleteModal DeleteTaskModal { get; set; }
 
 	protected override async Task OnInitializedAsync()
 	{
@@ -59,14 +67,33 @@ else
 
 	private void NewTaskModal()
 	{
-		Modal.task = new Activity();
-		Modal.Header = "New Task";
-		Modal.Open();
+		TaskModal.task = new Activity();
+		TaskModal.Header = "New Task";
+		TaskModal.Open();
+	}
+
+	private void EditTaskModal(Activity task)
+	{
+		TaskModal.task = task;
+		TaskModal.Header = task.Title;
+		TaskModal.Open();
 	}
 
 	private async void OnDataChanged()
 	{
 		tasks = await _tasksService.GetAllTasks();
 		StateHasChanged(); // Make the list of tasks to reload after a task is added/edited
+	}
+
+	private void ShowConfirmDeleteTaskModal(Activity task)
+	{
+		DeleteTaskModal.task = task;
+		DeleteTaskModal.Open();
+	}
+
+	private async void OnTaskDeleted()
+	{
+		tasks = await _tasksService.GetAllTasks();
+		StateHasChanged();
 	}
 }
