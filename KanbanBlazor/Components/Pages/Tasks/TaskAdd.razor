@@ -10,14 +10,18 @@
 
 <h1>New Task</h1>
 
-<EditForm Model="@task" OnSubmit="CreateTask" FormName="TaskAdd">
+<EditForm Model="@task" OnValidSubmit="CreateTask" FormName="TaskAdd">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
     <div class="form-group mt-2 mb-2">
         <label for="Title">Title</label>
         <InputText id="title" class="form-control" @bind-Value="@task.Title" />
+        <ValidationMessage For="@(() => task.Title)" />
     </div>
     <div class="form-group mt-2 mb-2">
         <label for="Description">Description</label>
         <InputText id="description" class="form-control" @bind-Value="@task.Description" />
+        <ValidationMessage For="@(() => task.Description)" />
     </div>
     <div class="form-group mb-2">
         <label for="Status">Status</label>
@@ -28,6 +32,7 @@
                 <option value="@status">@status</option>
             }
         </InputSelect>
+        <ValidationMessage For="@(() => task.Status)" />
     </div>
     <div class="form-group mb-2">
         <label for="ListGroup">List Group</label>
@@ -38,6 +43,7 @@
                 <option value="@listGroup.Id">@listGroup.Name</option>
             }
         </InputSelect>
+        <ValidationMessage For="@(() => task.ListGroupId)" />
     </div>
     <input type="submit" class="btn btn-primary" value="Save" />
     <a type="button" class="btn btn-secondary" href="/Tasks">Cancel</a>
