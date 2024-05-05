@@ -14,8 +14,10 @@
 else
 {
 	<div>
-		<a class="btn btn-primary" href="/Tasks/Add">New Task</a>
+		<button class="btn btn-primary" @onclick="(() => NewTaskModal())">New Task</button>
 	</div>
+
+	<TasksDetailModal @ref="Modal" DataChanged="@OnDataChanged"></TasksDetailModal>
 
 	<table class="table table-striped">
 		<thead>
@@ -48,8 +50,23 @@ else
 @code {
 	private List<Activity>? tasks;
 
+	private TasksDetailModal Modal { get; set; }
+
 	protected override async Task OnInitializedAsync()
 	{
 		tasks = await _tasksService.GetAllTasks();
+	}
+
+	private void NewTaskModal()
+	{
+		Modal.task = new Activity();
+		Modal.Header = "New Task";
+		Modal.Open();
+	}
+
+	private async void OnDataChanged()
+	{
+		tasks = await _tasksService.GetAllTasks();
+		StateHasChanged(); // Make the list of tasks to reload after a task is added/edited
 	}
 }

@@ -1,0 +1,109 @@
+﻿@using KanbanBlazor.Data.Services
+@using KanbanBlazor.Models
+@using KanbanBlazor.Models.Enum
+
+@inject NavigationManager _navigationManager
+@inject TasksService _tasksService
+@inject ListGroupsService _listGroupsService
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog" id="taskModal" style="display:@ModalDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Header</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="() => Close()">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <EditForm Model="@task" OnValidSubmit="@HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="modal-body">
+                    <div class="form-group mt-2 mb-2">
+                        <label for="Title">Title</label>
+                        <InputText id="title" class="form-control" @bind-Value="@task.Title" />
+                        <ValidationMessage For="@(() => task.Title)" />
+                    </div>
+                    <div class="form-group mt-2 mb-2">
+                        <label for="Description">Description</label>
+                        <InputText id="description" class="form-control" @bind-Value="@task.Description" />
+                        <ValidationMessage For="@(() => task.Description)" />
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="Status">Status</label>
+                        <InputSelect id="status" class="form-control" @bind-Value="@task.Status">
+                            <option value=""></option>
+                            @foreach (var status in Enum.GetNames(typeof(ActivityStatus)))
+                            {
+                                <option value="@status">@status</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => task.Status)" />
+                    </div>
+                    <div class="form-group mb-2">
+                        <label for="ListGroup">List Group</label>
+                        <InputSelect id="listgroup" class="form-control" @bind-Value="@task.ListGroupId">
+                            <option value=""></option>
+                            @foreach (var listGroup in listGroups)
+                            {
+                                <option value="@listGroup.Id">@listGroup.Name</option>
+                            }
+                        </InputSelect>
+                        <ValidationMessage For="@(() => task.ListGroupId)" />
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => Close()">Cancel</button>
+                </div>
+            </EditForm>
+            
+        </div>
+    </div>
+</div>
+
+
+@code {
+    public string ModalDisplay = "none;";
+    public string ModalClass = "";
+
+    private List<ListGroup>? listGroups;
+
+    [Parameter]
+    public Activity? task { get; set; }
+
+    [Parameter]
+    public string Header { get; set; }
+
+    [Parameter]
+    public Action DataChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        task ??= new Activity();
+        listGroups = await _listGroupsService.GetAllListGroups();
+    }
+
+    private async void HandleValidSubmit()
+    {
+        await _tasksService.AddTask(task);
+        Close();
+        //_navigationManager.NavigateTo("/Tasks", true);
+        DataChanged?.Invoke();
+    }
+
+    public void Open()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        ModalDisplay = "none";
+        ModalClass = "";
+        StateHasChanged();
+    }
+}
