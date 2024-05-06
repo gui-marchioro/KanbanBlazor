@@ -1,0 +1,59 @@
+﻿@using KanbanBlazor.Data.Services
+@using KanbanBlazor.Models
+
+@inject ListGroupsService _listGroupsService
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog" id="deleteListGroupModal" style="display:@ModalDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Deletion Confirmation of @listGroupName</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="() => Close()">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Do you want to remove this task?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" @onclick="ConfirmDeletion">Yes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => Close()">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    public string ModalDisplay = "none;";
+    public string ModalClass = "";
+    private string listGroupName = "";
+
+    [Parameter]
+    public ListGroup? listGroup { get; set; }
+
+    [Parameter]
+    public Action ListGroupDeleted { get; set; }
+
+    private async void ConfirmDeletion()
+    {
+        await _listGroupsService.Delete(listGroup.Id);
+        Close();
+        ListGroupDeleted?.Invoke();
+    }
+
+    public void Open()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+        listGroupName = listGroup.Name;
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        ModalDisplay = "none";
+        ModalClass = "";
+        StateHasChanged();
+    }
+}

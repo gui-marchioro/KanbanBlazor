@@ -1,0 +1,81 @@
+﻿@using KanbanBlazor.Data.Services
+@using KanbanBlazor.Models
+
+@inject ListGroupsService _listGroupsService
+
+<div class="modal @ModalClass" tabindex="-1" role="dialog" id="taskModal" style="display:@ModalDisplay">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">@Header</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="() => Close()">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <EditForm Model="@ListGroup" OnValidSubmit="@HandleValidSubmit">
+                <DataAnnotationsValidator />
+                <ValidationSummary />
+                <div class="modal-body">
+                    <div class="form-group mt-2 mb-2">
+                        <label for="Name">Name</label>
+                        <InputText id="title" class="form-control" @bind-Value="@ListGroup.Name" />
+                        <ValidationMessage For="@(() => ListGroup.Name)" />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="() => Close()">Cancel</button>
+                </div>
+            </EditForm>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    public string ModalDisplay = "none;";
+    public string ModalClass = "";
+
+    [Parameter]
+    public ListGroup? ListGroup { get; set; }
+
+    [Parameter]
+    public string Header { get; set; }
+
+    [Parameter]
+    public Action DataChanged { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        ListGroup ??= new ListGroup();
+    }
+
+    private async void HandleValidSubmit()
+    {
+        if (ListGroup.Id == 0)
+        {
+            await _listGroupsService.Add(ListGroup);
+        }
+        else
+        {
+            await _listGroupsService.Update(ListGroup);
+        }
+
+        Close();
+        DataChanged?.Invoke();
+    }
+
+    public void Open()
+    {
+        ModalDisplay = "block;";
+        ModalClass = "Show";
+        StateHasChanged();
+    }
+
+    public void Close()
+    {
+        ModalDisplay = "none";
+        ModalClass = "";
+        StateHasChanged();
+    }
+}

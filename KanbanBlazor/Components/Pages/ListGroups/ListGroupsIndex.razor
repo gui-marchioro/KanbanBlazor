@@ -1,0 +1,93 @@
+﻿@page "/ListGroups"
+
+@using KanbanBlazor.Data.Services
+@using KanbanBlazor.Models
+
+@inject ListGroupsService _listGroupsService
+
+<h1>List Groups</h1>
+
+@if (listGroups is null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div>
+		<button class="btn btn-primary" @onclick="(() => NewListGroupModal())">New List Group</button>
+	</div>
+
+	<ListGroupDetailModal @ref="ListGroupModal" DataChanged="@OnDataChanged" />
+
+	<ListGroupDeleteModal @ref="ListGroupDeleteModal" ListGroupDeleted="@OnListGroupDeleted" />
+
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<td>Name</td>
+				<td>Edit</td>
+				<td>Delete</td>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var listGroup in listGroups)
+			{
+				<tr>
+					<td>@listGroup.Name</td>
+					<td>
+						<input type="button" class="btn btn-primary" @onclick="(() =>EditListGroupModal(listGroup))" value="Edit" />
+					</td>
+					<td>
+						<input type="button" class="btn btn-danger" @onclick="(() =>ShowConfirmDeleteListGroupModal(listGroup))" value=" Delete" />
+					</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+
+@code {
+	private List<ListGroup>? listGroups;
+
+	private ListGroupDetailModal ListGroupModal { get; set; }
+
+	private ListGroupDeleteModal ListGroupDeleteModal { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		listGroups = await _listGroupsService.GetAllListGroups();
+	}
+
+	private void NewListGroupModal()
+	{
+		ListGroupModal.ListGroup = new ListGroup();
+		ListGroupModal.Header = "New List Group";
+		ListGroupModal.Open();
+	}
+
+	private void EditListGroupModal(ListGroup listGroup)
+	{
+		ListGroupModal.ListGroup = listGroup;
+		ListGroupModal.Header = listGroup.Name;
+		ListGroupModal.Open();
+	}
+
+	private async void OnDataChanged()
+	{
+		listGroups = await _listGroupsService.GetAllListGroups();
+		StateHasChanged(); // Make the list of list groups to reload after a list group is added/edited
+	}
+
+	private void ShowConfirmDeleteListGroupModal(ListGroup listGroup)
+	{
+		ListGroupDeleteModal.listGroup = listGroup;
+		ListGroupDeleteModal.Open();
+	}
+
+	private async void OnListGroupDeleted()
+	{
+		listGroups = await _listGroupsService.GetAllListGroups();
+		StateHasChanged();
+	}
+}
