@@ -1,0 +1,44 @@
+﻿@using KanbanBlazor.Data.Services
+@using KanbanBlazor.Models
+@using KanbanBlazor.Models.Enum
+
+@inject TasksService _tasksService
+
+<div class="row">
+    <DropZone Status="ActivityStatus.ToDo"
+                ColorClass="dropzone-todo"
+                Tasks="Tasks"
+                OnDrop="OnDrop"
+                OnStartDrag="OnStartDrag" />
+    <DropZone Status="ActivityStatus.InProgress"
+                ColorClass="dropzone-inprogress"
+                Tasks="Tasks"
+                OnDrop="OnDrop"
+                OnStartDrag="OnStartDrag" />
+    <DropZone Status="ActivityStatus.Done"
+                ColorClass="dropzone-done"
+                Tasks="Tasks"
+                OnDrop="OnDrop"
+                OnStartDrag="OnStartDrag" />
+</div>
+
+@code {
+    public Activity? CurrentItem;
+
+    List<Activity> Tasks = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Tasks = await _tasksService.GetAllTasks();
+    }
+
+    private void OnStartDrag(Activity item)
+    {
+        CurrentItem = item;
+    }
+    private async void OnDrop(ActivityStatus priority)
+    {
+        CurrentItem!.Status = priority;
+        await _tasksService.Update(CurrentItem);
+    }
+}

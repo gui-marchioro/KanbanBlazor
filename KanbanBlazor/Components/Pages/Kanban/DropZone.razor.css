@@ -1,0 +1,29 @@
+﻿.draggable {
+    margin-bottom: 10px;
+    padding: 10px 25px;
+    background: #787878;
+    color: white;
+    border-radius: 0px;
+    cursor: grab;
+}
+
+.draggable:active {
+    cursor: grabbing;
+}
+
+.dropzone {
+    padding: .75rem;
+    min-height: 20rem;
+}
+
+.dropzone-todo {
+    background: #3a0647;
+}
+
+.dropzone-inprogress {
+    background: #2a1050;
+}
+
+.dropzone-done {
+    background: #0b2363;
+}

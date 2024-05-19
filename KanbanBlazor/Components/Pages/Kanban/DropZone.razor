@@ -1,0 +1,49 @@
+﻿@using KanbanBlazor.Models
+@using KanbanBlazor.Models.Enum
+
+<div class="col">
+    <h2 style="">@Status.ToString()</h2>
+    <div class="dropzone @ColorClass"
+         ondragover="event.preventDefault();"
+         @ondrop="OnDropHandler">
+        @foreach (var item in Tasks.Where(q => (q.Status == Status && q.ListGroup.Name == "Panel")))
+        {
+            <div class="draggable"
+                 draggable="true"
+                 @ondragstart="@(() => OnDragStartHandler(item))">
+                @item.Title
+                <p/>
+                <span class="badge text-bg-secondary">
+                    @item.Description
+                </span>
+            </div>
+        }
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public List<Activity> Tasks { get; set; } = new();
+
+    [Parameter]
+    public ActivityStatus Status { get; set; }
+
+    [Parameter]
+    public string? ColorClass { get; set; }
+
+    [Parameter]
+    public EventCallback<ActivityStatus> OnDrop { get; set; }
+
+    [Parameter]
+    public EventCallback<Activity> OnStartDrag { get; set; }
+    private void OnDropHandler()
+    {
+        OnDrop.InvokeAsync(Status);
+    }
+
+    private void OnDragStartHandler(Activity task)
+    {
+        OnStartDrag.InvokeAsync(task);
+    }
+}
